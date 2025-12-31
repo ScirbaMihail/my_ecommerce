@@ -1,3 +1,45 @@
-from django.shortcuts import render
+# Django
+from django.contrib.auth import get_user_model
+
+# DRF
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import action
+
+# Local
+from apps.authentication.services import UserService
+from apps.authentication.serializers import TransactionSerializer
+
+User = get_user_model()
 
 # Create your views here.
+class UserTransactionViewSet(GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = TransactionSerializer
+
+    def _get_validated_amount(self, request):
+        # Validate data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Get data and proceed deposit
+        return serializer.validated_data["amount"]
+
+    @action(detail=True, methods=['post'])
+    def deposit(self, request, pk=None):
+        amount = self._get_validated_amount(request) 
+        success, msg = UserService.deposit(pk, amount)
+
+        if success:
+            return Response({'msg': msg}, status=status.HTTP_200_OK)
+        return Response({'msg': msg}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def withdraw(self, request, pk=None):
+        amount = self._get_validated_amount(request) 
+        success, msg = UserService.withdraw(pk, amount)
+
+        if success:
+            return Response({'msg': msg}, status=status.HTTP_200_OK)
+        return Response({'msg': msg}, status=status.HTTP_400_BAD_REQUEST)
