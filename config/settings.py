@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # DRF
     'rest_framework',
+    'drf_spectacular',
     # Local
     'apps.authentication',
     'apps.products',
@@ -61,6 +62,16 @@ AUTHENTICATION_BACKENDS = {
 }
 
 AUTH_USER_MODEL = 'authentication.user'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'ECommerce internal API',
+    'DESCRIPTION': 'Internal API for proceeding ECommerce actions',
+    'VERSION': '1.0'
+}
 
 ROOT_URLCONF = 'config.urls'
 

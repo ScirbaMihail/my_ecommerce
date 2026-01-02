@@ -2,25 +2,30 @@
 from django.contrib.auth import get_user_model
 
 # DRF
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, mixins
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
 # Local
 from apps.authentication.services import UserService
-from apps.authentication.serializers import TransactionSerializer
+from apps.authentication.serializers import TransactionSerializer, UserSerializer
 
 User = get_user_model()
 
 # Create your views here.
-class UserTransactionViewSet(GenericViewSet):
+class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
-    serializer_class = TransactionSerializer
+    serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['deposit', 'withdraw']:
+            return TransactionSerializer
+        return UserSerializer
 
     def _get_validated_amount(self, request):
         # Validate data
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data) 
         serializer.is_valid(raise_exception=True)
 
         # Get data and proceed deposit

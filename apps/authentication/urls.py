@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.authentication.views import UserTransactionViewSet
+from apps.authentication.views import UserViewSet
 
 router = DefaultRouter()
-router.register(r'users', UserTransactionViewSet, 'users')
+router.register(r'users', UserViewSet, 'users')
 urlpatterns = router.urls
