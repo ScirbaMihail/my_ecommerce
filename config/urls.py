@@ -14,25 +14,32 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 from apps.authentication.views import CustomTokenObtainView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     # Admin
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # API
-    path('api/', include('apps.authentication.urls')),
-    path('api/', include('apps.products.urls')),
-
+    path("api/", include("apps.authentication.urls")),
+    path("api/", include("apps.products.urls")),
     # API Docs
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-
-    # JWT Auth 
-    path('api/token/', CustomTokenObtainView.as_view(), name='token_obtain'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+    # JWT Auth
+    path("api/token/", CustomTokenObtainView.as_view(), name="token_obtain"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

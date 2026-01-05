@@ -12,11 +12,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-    balance = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(0)], default=0)
+    balance = models.DecimalField(
+        max_digits=6, decimal_places=2, validators=[MinValueValidator(0)], default=0
+    )
 
     objects = CustomUserManager()
-    
-    USERNAME_FIELD = 'email'
+
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     @property
@@ -24,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def __str__(self):
-        return f'{self.email=} -> {self.balance=}'
+        return f"{self.email=} -> {self.balance=}"
 
     class Meta:
-        db_table = 'users'
+        db_table = "users"

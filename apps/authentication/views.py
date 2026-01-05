@@ -11,9 +11,14 @@ from rest_framework.permissions import AllowAny
 
 # Local
 from apps.authentication.services import UserService
-from apps.authentication.serializers import TransactionSerializer, UserSerializer, CustomTokenObtainSerializer
+from apps.authentication.serializers import (
+    TransactionSerializer,
+    UserSerializer,
+    CustomTokenObtainSerializer,
+)
 
 User = get_user_model()
+
 
 # Create your views here.
 class CustomTokenObtainView(APIView):
@@ -31,32 +36,32 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
     serializer_class = UserSerializer
 
     def get_serializer_class(self):
-        if self.action in ['deposit', 'withdraw']:
+        if self.action in ["deposit", "withdraw"]:
             return TransactionSerializer
         return UserSerializer
 
     def _get_validated_amount(self, request):
         # Validate data
-        serializer = self.get_serializer(data=request.data) 
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         # Get data and proceed deposit
         return serializer.validated_data["amount"]
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def deposit(self, request, pk=None):
-        amount = self._get_validated_amount(request) 
+        amount = self._get_validated_amount(request)
         success, msg = UserService.deposit(pk, amount)
 
         if success:
-            return Response({'msg': msg}, status=status.HTTP_200_OK)
-        return Response({'msg': msg}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"msg": msg}, status=status.HTTP_200_OK)
+        return Response({"msg": msg}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def withdraw(self, request, pk=None):
-        amount = self._get_validated_amount(request) 
+        amount = self._get_validated_amount(request)
         success, msg = UserService.withdraw(pk, amount)
 
         if success:
-            return Response({'msg': msg}, status=status.HTTP_200_OK)
-        return Response({'msg': msg}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"msg": msg}, status=status.HTTP_200_OK)
+        return Response({"msg": msg}, status=status.HTTP_400_BAD_REQUEST)
