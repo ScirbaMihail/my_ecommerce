@@ -3,17 +3,29 @@ from django.contrib.auth import get_user_model
 
 # DRF
 from rest_framework.viewsets import GenericViewSet, mixins
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 
 # Local
 from apps.authentication.services import UserService
-from apps.authentication.serializers import TransactionSerializer, UserSerializer
+from apps.authentication.serializers import TransactionSerializer, UserSerializer, CustomTokenObtainSerializer
 
 User = get_user_model()
 
 # Create your views here.
+class CustomTokenObtainView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomTokenObtainSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
 class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
