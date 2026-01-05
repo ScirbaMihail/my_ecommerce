@@ -18,9 +18,10 @@ User = get_user_model()
 # Create your views here.
 class CustomTokenObtainView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = CustomTokenObtainSerializer
 
     def post(self, request):
-        serializer = CustomTokenObtainSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 

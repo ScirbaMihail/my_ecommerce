@@ -15,10 +15,10 @@ class CustomTokenObtainSerializer(serializers.Serializer):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError('Invalid credentials')
+            raise serializers.ValidationError({'detail': 'Invalid credentials'})
 
         if not user.check_password(password):
-            return serializers.ValidationError('Invalid credentials')
+            raise serializers.ValidationError({'detail': 'Invalid credentials'})
 
         refresh = RefreshToken.for_user(user)
 
