@@ -24,5 +24,8 @@ class Product(models.Model):
         to=Category, null=True, blank=False, on_delete=models.SET_NULL
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "products"

@@ -10,3 +10,7 @@ class CartProductForm(forms.ModelForm):
         required=False,
         widget = FilteredSelectMultiple(verbose_name='Menu Items', is_stacked=False)
     )
+
+    class Meta:
+        model = Cart
+        fields = '__all__'
