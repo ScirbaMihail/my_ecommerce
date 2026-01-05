@@ -28,8 +28,6 @@ class CustomTokenObtainSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    amount = serializers.DecimalField(max_digits=6, decimal_places=2)
-
     class Meta:
         model = User
         fields = "__all__"
