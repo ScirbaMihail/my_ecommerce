@@ -13,7 +13,7 @@ User = get_user_model()
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through="CartProduct")
-    cost = models.DecimalField(validators=[MinValueValidator(0)], max_digits=10, decimal_places=2, null=True, blank=True)
+    cost = models.DecimalField(validators=[MinValueValidator(0)], max_digits=10, decimal_places=2, null=False, blank=True, default=0)
 
     class Meta:
         db_table = 'carts'
