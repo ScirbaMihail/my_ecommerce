@@ -21,7 +21,7 @@ class Cart(models.Model):
 class CartProduct(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, null=True, blank=False, on_delete=models.SET_NULL)
-    quantity = models.PositiveIntegerField(MinValueValidator(1))
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         db_table = 'carts_products'
