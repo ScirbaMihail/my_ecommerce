@@ -13,8 +13,5 @@ class CategoryAdmin(ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
     list_display = ("name", "category", "price", "in_stock")
-    readonly_fields = ("in_stock",)
-
-    fieldsets = [
-        (_(""), {"fields": ("name", "description", "category", "price", "amount")})
-    ]
+    exclude = ("in_stock",)
+    search_fields = ('name',)
