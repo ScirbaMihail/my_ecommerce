@@ -26,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def __str__(self):
-        return f"{self.email=} -> {self.balance=}"
+        return self.email 
 
     class Meta:
         db_table = "users"
