@@ -25,7 +25,12 @@ class CartViewSet(ModelViewSet):
             status=status.HTTP_200_OK if succeeded else status.HTTP_404_NOT_FOUND,
         )
 
-    @action(detail=True, methods=['post'], url_path='items', serializer_class=CartItemInputSerializer)
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="items",
+        serializer_class=CartItemInputSerializer,
+    )
     def add_item(self, request, pk=None):
         serializer = CartItemInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -34,4 +39,18 @@ class CartViewSet(ModelViewSet):
         return Response(
             response,
             status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,
+        )
+
+    @action(
+        detail=True,
+        methods=["delete"],
+        url_path="items/(?P<item_id>[^/.]+)",
+    )
+    def remove_item(self, request, pk=None, item_id=None):
+        succeeded, response = CartService.remove_product(pk, item_id)
+        return Response(
+            response,
+            status=(
+                status.HTTP_204_NO_CONTENT if succeeded else status.HTTP_404_NOT_FOUND
+            ),
         )
