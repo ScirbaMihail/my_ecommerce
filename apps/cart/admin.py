@@ -11,6 +11,6 @@ class CartProductInline(TabularInline):
 @admin.register(Cart)
 class CartAdmin(ModelAdmin):
 
-    list_display = ('user__email', 'cost')
+    list_display = ('id', 'user__email', 'cost')
     exclude = ('cost',)
     inlines = [CartProductInline]
