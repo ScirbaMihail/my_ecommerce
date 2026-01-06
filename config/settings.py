@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "apps.authentication",
     "apps.products",
     "apps.cart",
+    "apps.payments",
 ]
 
 # Middleware
