@@ -20,7 +20,11 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class OrderInputSerializer(serializers.Serializer):
+class OrderCreateSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), required=True, many=False
     )
+
+
+class OrderPaySerializer(serializers.Serializer):
+    pass

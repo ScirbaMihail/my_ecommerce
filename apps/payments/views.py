@@ -1,11 +1,13 @@
 # drf
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
 # local
 from apps.payments.models import Order
-from apps.payments.serializers import OrderSerializer, OrderInputSerializer
+from apps.payments.serializers import OrderSerializer, OrderCreateSerializer, OrderPaySerializer
 from apps.payments.services import OrderService
 
 
@@ -17,7 +19,9 @@ class OrderViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == "create":
-            return OrderInputSerializer
+            return OrderCreateSerializer
+        elif self.action == 'pay':
+            return OrderPaySerializer
         return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
@@ -26,3 +30,15 @@ class OrderViewSet(ModelViewSet):
             response,
             status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,
         )
+
+    @action(detail=True, methods=["post"])
+    def pay(self, request, pk=None):
+        succeeded, response = OrderService.process_payment(pk)
+        return Response(
+            response,
+            status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,
+        )
+
+
+class TransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    pass
