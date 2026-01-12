@@ -219,5 +219,28 @@ UNFOLD = {
                 ]
             }
         ]
-    }
+    },
+    "TABS": [
+        {
+            "page": "Products",
+            "models": ["products.product"],
+            "items": [
+                {
+                    "title": "All",
+                    "link":reverse_lazy("admin:products_product_changelist"),
+                    "permission": lambda request: request.user.is_superuser
+                },
+                {
+                    "title": "In stock",
+                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=True",
+                    "permission": lambda request: request.user.is_superuser
+                },
+                {
+                    "title": "Missing",
+                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=False",
+                    "permission": lambda request: request.user.is_superuser
+                }
+            ]
+        }
+    ]
 }
