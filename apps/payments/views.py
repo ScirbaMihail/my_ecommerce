@@ -11,3 +11,5 @@ class OrderViewSet(ModelViewSet):
     queryset = Order.objects.prefetch_related("products").select_related("user").all()
     http_method_names = ("get", "head", "post", "put", "patch")
     serializer_class = OrderSerializer
+
+    
