@@ -19,6 +19,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderInputSerializer(serializers.Serializer):
-    users = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), required=True
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=True, many=False
     )
