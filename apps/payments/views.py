@@ -21,9 +21,7 @@ class OrderViewSet(ModelViewSet):
         return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
-        succeeded, response = OrderService.create_order(
-            user=request.data["user"]
-        )
+        succeeded, response = OrderService.create_order(user=request.data["user"])
         return Response(
             response,
             status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,

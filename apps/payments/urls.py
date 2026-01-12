@@ -5,7 +5,5 @@ from rest_framework.routers import DefaultRouter
 from apps.payments.views import OrderViewSet
 
 router = DefaultRouter()
-
-router.register('payments/orders', OrderViewSet, basename='orders')
-
+router.register("payments/orders", OrderViewSet, basename="orders")
 urlpatterns = router.urls

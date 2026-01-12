@@ -1,6 +1,9 @@
+# django
+from django.db.models import F
+
+# local
 from apps.cart.models import Cart, CartProduct
 from apps.cart.serializers import CartSerializer
-from django.db.models import F
 from apps.products.models import Product
 
 
@@ -49,10 +52,10 @@ class CartService:
         except Product.DoesNotExist:
             return False, {"status": "failed", "message": "product not found"}
 
-
-        deleted, _ = CartProduct.objects.filter(
-            cart=cart, product=product
-        ).delete()
+        deleted, _ = CartProduct.objects.filter(cart=cart, product=product).delete()
         if not deleted:
-            return False, {"status": "failed", "message": "product {product.name=} not found in cart"}
+            return False, {
+                "status": "failed",
+                "message": "product {product.name=} not found in cart",
+            }
         return True, {"status": "success", "message": "product deleted"}

@@ -1,12 +1,10 @@
-# DRF
+# drf
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-# Django
-
-# Local
+# local
 from apps.cart.serializers import CartSerializer, CartItemInputSerializer
 from apps.cart.models import Cart
 from apps.cart.services import CartService

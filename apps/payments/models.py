@@ -1,9 +1,12 @@
+# django
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator
 
+# local
 from apps.products.models import Product
+
 
 User = get_user_model()
 
@@ -24,5 +27,7 @@ class Order(models.Model):
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True, blank=False, on_delete=models.SET_NULL)
+    product = models.ForeignKey(
+        Product, null=True, blank=False, on_delete=models.SET_NULL
+    )
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)], default=1)

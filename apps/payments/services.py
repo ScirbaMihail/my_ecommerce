@@ -2,11 +2,12 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-User = get_user_model()
-
 # local
 from apps.cart.models import Cart
 from apps.payments.models import Order, OrderProduct
+
+
+User = get_user_model()
 
 
 class OrderService:

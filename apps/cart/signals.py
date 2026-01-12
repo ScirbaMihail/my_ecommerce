@@ -3,10 +3,12 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models import Sum, F
 from django.contrib.auth import get_user_model
-User = get_user_model()
 
 # local
 from apps.cart.models import CartProduct, Cart
+
+
+User = get_user_model()
 
 
 @receiver(post_save, sender=User)
