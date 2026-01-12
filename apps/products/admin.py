@@ -20,3 +20,5 @@ class ProductAdmin(ModelAdmin):
     list_display = ("id", "name", "category", "price", "in_stock")
     exclude = ("in_stock",)
     search_fields = ("name",)
+
+    conditional_fields = {"description": "has_description"}

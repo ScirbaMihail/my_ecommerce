@@ -17,6 +17,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    has_description = models.BooleanField(default=False)
     description = models.CharField(null=False, blank=True)
     price = models.FloatField(validators=[MinValueValidator(0)])
     amount = models.PositiveIntegerField()
