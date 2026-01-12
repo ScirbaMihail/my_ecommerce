@@ -1,9 +1,12 @@
+# django
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 # drf
 from rest_framework import serializers
 
 # local
 from apps.payments.models import Order
-from apps.cart.models import Cart
 from apps.products.serializers import ProductSerializer
 
 
@@ -16,6 +19,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class OrderInputSerializer(serializers.Serializer):
-    cart = serializers.PrimaryKeyRelatedField(
-        queryset=Cart.objects.prefetch_related("products").all(), required=True
+    users = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), required=True
     )
