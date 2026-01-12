@@ -1,8 +1,9 @@
+# django
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.utils import timezone
 from django.core.validators import MinValueValidator
 
+# local
 from apps.authentication.managers import CustomUserManager
 
 
@@ -26,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def __str__(self):
-        return self.email 
+        return self.email
 
     class Meta:
         db_table = "users"

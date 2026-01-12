@@ -1,5 +1,7 @@
+# drf
 from rest_framework import serializers
 
+# local
 from apps.products.models import Product
 
 

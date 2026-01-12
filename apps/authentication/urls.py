@@ -1,5 +1,7 @@
+# drf
 from rest_framework.routers import DefaultRouter
 
+# local
 from apps.authentication.views import UserViewSet
 
 router = DefaultRouter()

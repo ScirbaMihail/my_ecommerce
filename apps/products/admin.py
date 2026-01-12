@@ -1,7 +1,12 @@
+# django
 from django.contrib import admin
-from unfold.admin import ModelAdmin
-from apps.products.models import Product, Category
 from django.utils.translation import gettext_lazy as _
+
+# unfold
+from unfold.admin import ModelAdmin
+
+# local
+from apps.products.models import Product, Category
 
 
 # Register your models here.
@@ -12,6 +17,6 @@ class CategoryAdmin(ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    list_display = ('id', "name", "category", "price", "in_stock")
+    list_display = ("id", "name", "category", "price", "in_stock")
     exclude = ("in_stock",)
-    search_fields = ('name',)
+    search_fields = ("name",)

@@ -1,7 +1,8 @@
-from django.shortcuts import render
+# drf
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, AllowAny
 
+# local
 from apps.products.serializers import ProductSerializer
 from apps.products.models import Product
 
