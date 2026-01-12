@@ -31,3 +31,13 @@ class OrderProduct(models.Model):
         Product, null=True, blank=False, on_delete=models.SET_NULL
     )
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)], default=1)
+
+
+class Transaction(models.Model):
+    class Status(models.TextChoices):
+        FAIL = "fail", _("Fail")
+        SUCCESS = "success", _("Success")
+
+    order = models.ForeignKey(Order, null=True, blank=False, on_delete=models.SET_NULL)
+    amount = models.DecimalField(max_digits=6, decimal_places=2)
+    status = models.CharField(choices=Status.choices)
