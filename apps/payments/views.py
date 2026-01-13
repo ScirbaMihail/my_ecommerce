@@ -49,16 +49,6 @@ class OrderViewSet(ModelViewSet):
             status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,
         )
 
-    @action(
-        detail=True,
-        methods=["get", "patch"],
-        permission_classes=[IsAdminUser],
-        authentication_classes=[SessionAuthentication],
-    )
-    def mark_paid(self, request, pk=None):
-        OrderService.mark_paid(pk)
-        return redirect(reverse_lazy("admin:payments_order_changelist"))
-
 
 class TransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     pass
