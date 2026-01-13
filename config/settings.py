@@ -155,3 +155,96 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+from django.urls import reverse_lazy
+UNFOLD = {
+    "SITE_TITLE": "My ECommerce",
+    "SITE_HEADER": "My ECommerce",
+    "SITE_SYMBOL": "Money",
+    "SIDEBAR": {
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Authentication",
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Groups",
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    },
+                    {
+                        "title": "Users",
+                        "icon": "person",
+                        "link": reverse_lazy("admin:authentication_user_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    }
+                ]
+            },
+            {
+                "title": "Management",
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Products",
+                        "icon": "box",
+                        "link": reverse_lazy("admin:products_product_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    },
+                    {
+                        "title": "Carts",
+                        "icon": "shopping_cart",
+                        "link": reverse_lazy("admin:cart_cart_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    }
+                ]
+            },
+            {
+                "title": "billing",
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": "Orders",
+                        "icon": "order_approve",
+                        "link": reverse_lazy("admin:payments_order_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    },
+                    {
+                        "title": "Transaction",
+                        "icon": "contract",
+                        "link": reverse_lazy("admin:payments_transaction_changelist"),
+                        "permission": lambda request: request.user.is_superuser
+                    }
+                ]
+            }
+        ]
+    },
+    "TABS": [
+        {
+            "page": "Products",
+            "models": ["products.product"],
+            "items": [
+                {
+                    "title": "All",
+                    "link":reverse_lazy("admin:products_product_changelist"),
+                    "permission": lambda request: request.user.is_superuser
+                },
+                {
+                    "title": "In stock",
+                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=True",
+                    "permission": lambda request: request.user.is_superuser
+                },
+                {
+                    "title": "Missing",
+                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=False",
+                    "permission": lambda request: request.user.is_superuser
+                }
+            ]
+        }
+    ]
+}

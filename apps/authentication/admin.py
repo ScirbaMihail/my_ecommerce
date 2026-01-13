@@ -12,3 +12,4 @@ User = get_user_model()
 @admin.register(User)
 class UserAdmin(ModelAdmin):
     list_display = ("id", "email", "balance")
+    list_display_links = ("id", "email", "balance")
