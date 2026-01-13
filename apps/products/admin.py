@@ -18,6 +18,7 @@ class CategoryAdmin(ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
     list_display = ("id", "name", "category", "price", "in_stock")
+    list_display_links = ("id", "name", "category", "price", "in_stock")
     exclude = ("in_stock",)
     search_fields = ("name",)
 

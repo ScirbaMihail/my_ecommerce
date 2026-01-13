@@ -76,3 +76,13 @@ class OrderService:
             order.save(update_fields=["status"])
 
         return True, {"status": "success", "message": "Order is paid"}
+    
+    @staticmethod
+    def mark_paid(order_id):
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.status = Order.Statuses.PAID
+            order.save(update_fields=['status'])
+            return True, {"status": "success", "message": "order marked as paid"}
+        except Order.DoesNotExist:
+            return False, {"status": "failed", "message": "order does not exist"}

@@ -1,13 +1,23 @@
+# django
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+
 # drf
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
+from rest_framework.authentication import SessionAuthentication
 
 # local
 from apps.payments.models import Order
-from apps.payments.serializers import OrderSerializer, OrderCreateSerializer, OrderPaySerializer
+from apps.payments.serializers import (
+    OrderSerializer,
+    OrderCreateSerializer,
+    OrderPaySerializer,
+)
 from apps.payments.services import OrderService
 
 
@@ -20,7 +30,7 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return OrderCreateSerializer
-        elif self.action == 'pay':
+        elif self.action == "pay":
             return OrderPaySerializer
         return super().get_serializer_class()
 
@@ -38,6 +48,16 @@ class OrderViewSet(ModelViewSet):
             response,
             status=status.HTTP_201_CREATED if succeeded else status.HTTP_404_NOT_FOUND,
         )
+
+    @action(
+        detail=True,
+        methods=["get", "patch"],
+        permission_classes=[IsAdminUser],
+        authentication_classes=[SessionAuthentication],
+    )
+    def mark_paid(self, request, pk=None):
+        OrderService.mark_paid(pk)
+        return redirect(reverse_lazy("admin:payments_order_changelist"))
 
 
 class TransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):

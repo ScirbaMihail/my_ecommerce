@@ -27,6 +27,8 @@ class CartProductInline(TabularInline):
 class CartAdmin(ModelAdmin):
 
     list_display = ("id", "user__email", "cost")
+    list_display_links = ("id", "user__email", "cost")
     list_sections = (ProductTableSection,)
     exclude = ("cost",)
     inlines = [CartProductInline]
+    actions = None
