@@ -80,7 +80,7 @@ SIMPLE_JWT = {
     # Life time
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKEN": False,
+    "ROTATE_REFRESH_TOKEN": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
     # User config
