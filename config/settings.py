@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     # Local
+    "apps.core",
     "apps.authentication",
     "apps.products",
     "apps.cart",
