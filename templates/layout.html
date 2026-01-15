@@ -1,16 +1,35 @@
+{% load static %}
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'public/pages/css/layout.css' %}" />
+    {% block extra_headers %}
 
     {% endblock %}
     <title>My ECommerce</title>
   </head>
   <body>
-    <header>
-      <a href="{% url 'public:pages-list' %}">Home</a>
+    <header id="header-container">
+      <nav>
+        <ul>
+          <li>
+            <a href="">Home</a>
+          </li>
+          <li>
+            <a href="">Store</a>
+          </li>
+          <li>
+            <a href="">About</a>
+          </li>
+          <li>
+            <p>Loading ...</p>
+          </li>
+        </ul>
+      </nav>
     </header>
     {% block content %}
 
