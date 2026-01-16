@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -75,7 +77,6 @@ REST_FRAMEWORK = {
 }
 
 from datetime import timedelta
-
 SIMPLE_JWT = {
     # Life time
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -157,11 +158,10 @@ USE_TZ = True
 # Static files
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 from django.urls import reverse_lazy
+
 UNFOLD = {
     "SITE_TITLE": "My ECommerce",
     "SITE_HEADER": "My ECommerce",
@@ -177,15 +177,15 @@ UNFOLD = {
                         "title": "Groups",
                         "icon": "group",
                         "link": reverse_lazy("admin:auth_group_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Users",
                         "icon": "person",
                         "link": reverse_lazy("admin:authentication_user_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
             },
             {
                 "title": "Management",
@@ -195,15 +195,15 @@ UNFOLD = {
                         "title": "Products",
                         "icon": "box",
                         "link": reverse_lazy("admin:products_product_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Carts",
                         "icon": "shopping_cart",
                         "link": reverse_lazy("admin:cart_cart_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
             },
             {
                 "title": "billing",
@@ -213,17 +213,17 @@ UNFOLD = {
                         "title": "Orders",
                         "icon": "order_approve",
                         "link": reverse_lazy("admin:payments_order_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Transaction",
                         "icon": "contract",
                         "link": reverse_lazy("admin:payments_transaction_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
-            }
-        ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
+            },
+        ],
     },
     "TABS": [
         {
@@ -232,20 +232,20 @@ UNFOLD = {
             "items": [
                 {
                     "title": "All",
-                    "link":reverse_lazy("admin:products_product_changelist"),
-                    "permission": lambda request: request.user.is_superuser
+                    "link": reverse_lazy("admin:products_product_changelist"),
+                    "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "In stock",
                     "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=True",
-                    "permission": lambda request: request.user.is_superuser
+                    "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "Missing",
                     "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=False",
-                    "permission": lambda request: request.user.is_superuser
-                }
-            ]
+                    "permission": lambda request: request.user.is_superuser,
+                },
+            ],
         }
-    ]
+    ],
 }
