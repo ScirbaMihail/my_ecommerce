@@ -1,16 +1,18 @@
 # django
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 # drf
-from rest_framework.viewsets import GenericViewSet, mixins
+from rest_framework.viewsets import ViewSet, GenericViewSet, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.exceptions import TokenError
 
 # local
-from apps.authentication.services import UserService
+from apps.authentication.services import UserService, AuthenticationService
 from apps.authentication.serializers import (
     TransactionSerializer,
     UserSerializer,
@@ -29,6 +31,68 @@ class CustomTokenObtainView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+class AuthenticationViewSet(ViewSet):
+    serializer_class = CustomTokenObtainSerializer
+
+    @action(detail=False, methods=["get"])
+    def authentication_status(self, request):
+        return Response({"status": "authenticated"}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    def login(self, request):
+        data, msg = AuthenticationService.login(request)
+        if not data:
+            return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
+
+        response = Response({"status": msg}, status=status.HTTP_200_OK)
+
+        self._set_cookies(response, data["access"], data["refresh"])
+        return response
+
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[AllowAny],
+        url_path="token/refresh",
+        serializer_class=None
+    )
+    def refresh_token(self, request):
+        data, msg = AuthenticationService.refresh_token(request)
+
+        if not data:
+            return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            access, refresh = data["access"], data["refresh"]
+            response = Response({"status": msg}, status=status.HTTP_200_OK)
+            self._set_cookies(response, access, refresh)
+            return response
+        except TokenError as e:
+            return Response(
+                {"status": "Invalid or expired token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+    def _set_cookies(self, response: Response, access_token, refresh_token):
+        jwt_settings = settings.SIMPLE_JWT
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            expires=jwt_settings["ACCESS_TOKEN_LIFETIME"],
+            httponly=True,
+            secure=False,
+            path="/api/auth/",
+        )
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            expires=jwt_settings["REFRESH_TOKEN_LIFETIME"],
+            httponly=True,
+            secure=False,
+            path="/api/auth/",
+        )
 
 
 class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):

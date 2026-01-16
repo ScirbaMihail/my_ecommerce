@@ -2,23 +2,45 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 
+# drf
+from rest_framework_simplejwt.tokens import RefreshToken
+
 User = get_user_model()
 
 
 class AuthenticationService:
-    def authenticate(request, email, password):
-        user = authenticate(request, email, password)
 
-        if user is None:
+    @staticmethod
+    def login(request):
+        data = request.data
+        email = data["email"]
+        password = data["password"]
+
+        user = authenticate(request, username=email, password=password)
+
+        if not user or not user.is_active:
             return None, "Invalid credentials"
 
-        if not user.is_active:
-            return None, "Account is inactive"
+        refresh = RefreshToken.for_user(user)
 
-        return user, None
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }, "logged in successfully"
 
-    def login(request, user):
-        login(user)
+    @staticmethod
+    def refresh_token(request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if refresh_token is None:
+            None, "token not found"
+
+        refresh = RefreshToken(refresh_token)
+        access = refresh.access_token
+        return {
+            "refresh": str(refresh),
+            "access": str(access),
+        }, "token refreshed successfully"
 
 
 class UserService:
