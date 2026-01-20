@@ -1,17 +1,18 @@
 const API_URL = 'http://127.0.0.1:8000/api'
 
-async function refreshToken(): Promise<boolean> {
-    const url = `${API_URL}/token/refresh`
+async function refreshToken() {
+    const url = `${API_URL}/auth/token/refresh/`
     const response = await fetch(url, {
         headers: {
             "Content-type": "application/json"
         },
+        method: "POST",
         credentials: "include"
     })
     return response.ok
 }
 
-async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function fetchWithAuth(endpoint, options = {}, raise_error = false) {
     const url = `${API_URL}/${endpoint}`
     const response = await fetch(url, {
         headers: {
@@ -27,7 +28,10 @@ async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Pr
         if (refreshed) {
             return fetchWithAuth(url, options)
         }
-        window.location.href = ''
+        if (raise_error) {
+            throw new Error(`API ERROR: refresh token failed`)
+        }
+        window.location.href = '/login'
     }
 
     if (!response.ok) {
@@ -35,4 +39,14 @@ async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Pr
     }
 
     return response.json()
+}
+
+
+export async function is_logged() {
+    try {
+        await fetchWithAuth('auth/authentication_status/', {}, true)
+        return "My profile"
+    } catch {
+        return "Log in"
+    }
 }

@@ -94,6 +94,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "ECommerce internal API",
     "DESCRIPTION": "Internal API for proceeding ECommerce actions",
     "VERSION": "1.0",
+    "PREPROCESSING_HOOKS": ["apps.core.hooks.preprocessing_filter_spec"]
 }
 
 # Config

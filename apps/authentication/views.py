@@ -23,16 +23,6 @@ User = get_user_model()
 
 
 # Create your views here.
-class CustomTokenObtainView(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = CustomTokenObtainSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
-
-
 class AuthenticationViewSet(ViewSet):
     serializer_class = CustomTokenObtainSerializer
 
@@ -59,15 +49,16 @@ class AuthenticationViewSet(ViewSet):
         serializer_class=None
     )
     def refresh_token(self, request):
-        data, msg = AuthenticationService.refresh_token(request)
-
-        if not data:
-            return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
-
         try:
+            data, msg = AuthenticationService.refresh_token(request)
+            if not data:
+                return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
+
             access, refresh = data["access"], data["refresh"]
+
             response = Response({"status": msg}, status=status.HTTP_200_OK)
             self._set_cookies(response, access, refresh)
+
             return response
         except TokenError as e:
             return Response(
@@ -95,7 +86,7 @@ class AuthenticationViewSet(ViewSet):
         )
 
 
-class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
+class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
