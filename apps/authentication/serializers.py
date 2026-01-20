@@ -35,5 +35,5 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TransactionSerializer(serializers.Serializer):
+class PerformTransactionSerializer(serializers.Serializer):
     amount = serializers.DecimalField(max_digits=6, decimal_places=2)

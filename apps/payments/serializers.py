@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 # local
-from apps.payments.models import Order
+from apps.payments.models import Order, Transaction
 from apps.products.serializers import ProductSerializer
 
 
@@ -28,3 +28,8 @@ class OrderCreateSerializer(serializers.Serializer):
 
 class OrderPaySerializer(serializers.Serializer):
     pass
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = "__all__"

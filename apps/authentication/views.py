@@ -14,7 +14,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 # local
 from apps.authentication.services import UserService, AuthenticationService
 from apps.authentication.serializers import (
-    TransactionSerializer,
+    PerformTransactionSerializer,
     UserSerializer,
     CustomTokenObtainSerializer,
 )
@@ -92,7 +92,7 @@ class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):
 
     def get_serializer_class(self):
         if self.action in ["deposit", "withdraw"]:
-            return TransactionSerializer
+            return PerformTransactionSerializer
         return UserSerializer
 
     def _get_validated_amount(self, request):
