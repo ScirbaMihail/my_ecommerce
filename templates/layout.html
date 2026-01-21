@@ -1,0 +1,48 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'public/pages/css/layout.css' %}" />
+    {% block extra_headers %}
+
+    {% endblock %}
+    <title>My ECommerce</title>
+  </head>
+  <body>
+    <header id="header-container">
+      <nav>
+        <ul>
+          <li>
+            <a href="{% url 'public:pages-list' %}">Home</a>
+          </li>
+          <li>
+            <a href="">Store</a>
+          </li>
+          <li>
+            <a href="">About</a>
+          </li>
+          <li id="header-container__profile">
+            <p>Loading ...</p>
+            <a href="{% url 'public:pages-login' %}" id="header-container__login-link" style="display: none;"></a>
+          </li>
+          <li>
+            <a href="{% url 'public:pages-list' %}" style="display: none;" id="logout-btn">Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    {% block content %}
+
+    {% endblock %}
+    {% block extra_js %}
+
+    {% endblock %}
+
+    <footer></footer>
+    <script type="module" src="{% static 'public/pages/js/layout.js' %}"></script>
+  </body>
+</html>

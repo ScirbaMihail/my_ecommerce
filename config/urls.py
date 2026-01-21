@@ -22,17 +22,17 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
-from apps.authentication.views import CustomTokenObtainView
-from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     # Admin
     path("admin/", admin.site.urls),
+    # Pages
+    path("", include("apps.core.urls", namespace="public")),
     # API
-    path("api/", include("apps.authentication.urls")),
-    path("api/", include("apps.products.urls")),
-    path("api/", include("apps.cart.urls")),
-    path("api/", include("apps.payments.urls")),
+    path("api/", include("apps.authentication.urls", namespace="api")),
+    path("api/", include("apps.products.urls", namespace="api")),
+    path("api/", include("apps.cart.urls", namespace="api")),
+    path("api/", include("apps.payments.urls", namespace="api")),
     # API Docs
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
@@ -41,7 +41,4 @@ urlpatterns = [
         name="swagger-ui",
     ),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
-    # JWT Auth
-    path("api/token/", CustomTokenObtainView.as_view(), name="token_obtain"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

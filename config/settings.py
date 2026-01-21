@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -41,8 +43,10 @@ INSTALLED_APPS = [
     # DRF
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
     # Local
+    "apps.core",
     "apps.authentication",
     "apps.products",
     "apps.cart",
@@ -68,7 +72,8 @@ AUTH_USER_MODEL = "authentication.user"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
+        "apps.authentication.authentication.CookieJWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication"
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
@@ -79,7 +84,7 @@ SIMPLE_JWT = {
     # Life time
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKEN": False,
+    "ROTATE_REFRESH_TOKEN": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
     # User config
@@ -92,6 +97,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "ECommerce internal API",
     "DESCRIPTION": "Internal API for proceeding ECommerce actions",
     "VERSION": "1.0",
+    "PREPROCESSING_HOOKS": ["apps.core.hooks.preprocessing_filter_spec"],
 }
 
 # Config
@@ -156,11 +162,10 @@ USE_TZ = True
 # Static files
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static'
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 from django.urls import reverse_lazy
+
 UNFOLD = {
     "SITE_TITLE": "My ECommerce",
     "SITE_HEADER": "My ECommerce",
@@ -176,15 +181,15 @@ UNFOLD = {
                         "title": "Groups",
                         "icon": "group",
                         "link": reverse_lazy("admin:auth_group_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Users",
                         "icon": "person",
                         "link": reverse_lazy("admin:authentication_user_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
             },
             {
                 "title": "Management",
@@ -194,15 +199,15 @@ UNFOLD = {
                         "title": "Products",
                         "icon": "box",
                         "link": reverse_lazy("admin:products_product_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Carts",
                         "icon": "shopping_cart",
                         "link": reverse_lazy("admin:cart_cart_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
             },
             {
                 "title": "billing",
@@ -212,17 +217,17 @@ UNFOLD = {
                         "title": "Orders",
                         "icon": "order_approve",
                         "link": reverse_lazy("admin:payments_order_changelist"),
-                        "permission": lambda request: request.user.is_superuser
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": "Transaction",
                         "icon": "contract",
                         "link": reverse_lazy("admin:payments_transaction_changelist"),
-                        "permission": lambda request: request.user.is_superuser
-                    }
-                ]
-            }
-        ]
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
+            },
+        ],
     },
     "TABS": [
         {
@@ -231,20 +236,20 @@ UNFOLD = {
             "items": [
                 {
                     "title": "All",
-                    "link":reverse_lazy("admin:products_product_changelist"),
-                    "permission": lambda request: request.user.is_superuser
+                    "link": reverse_lazy("admin:products_product_changelist"),
+                    "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "In stock",
                     "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=True",
-                    "permission": lambda request: request.user.is_superuser
+                    "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "Missing",
                     "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=False",
-                    "permission": lambda request: request.user.is_superuser
-                }
-            ]
+                    "permission": lambda request: request.user.is_superuser,
+                },
+            ],
         }
-    ]
+    ],
 }

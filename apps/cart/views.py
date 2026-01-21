@@ -1,4 +1,5 @@
 # drf
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response

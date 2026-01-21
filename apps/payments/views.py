@@ -8,15 +8,14 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser
-from rest_framework.authentication import SessionAuthentication
 
 # local
-from apps.payments.models import Order
+from apps.payments.models import Order, Transaction
 from apps.payments.serializers import (
     OrderSerializer,
     OrderCreateSerializer,
     OrderPaySerializer,
+    TransactionSerializer,
 )
 from apps.payments.services import OrderService
 
@@ -51,4 +50,5 @@ class OrderViewSet(ModelViewSet):
 
 
 class TransactionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    pass
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
