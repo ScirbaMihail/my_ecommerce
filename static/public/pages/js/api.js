@@ -78,13 +78,14 @@ export async function login(email, password) {
         "password": password
     }
     try {
-        fetchWithNoAuth('auth/login/', { method: "POST", body: JSON.stringify(credentials) })
-        redirect('/')
+        await fetchWithNoAuth('auth/login/', { method: "POST", body: JSON.stringify(credentials) })
+        window.location.href = '/'
     } catch {
-        redirect('/login')
+        window.location.href = '/login'
     }
 }
 
 export async function logout() {
     await fetchWithAuth("auth/logout/", { method: "POST" })
+    window.location.href = '/'
 }

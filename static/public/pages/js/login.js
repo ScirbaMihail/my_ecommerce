@@ -7,7 +7,7 @@ async function submitForm() {
     await login(formData.get('email'), formData.get('password'))
 }
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
     event.preventDefault()
-    submitForm()
+    await submitForm()
 })
