@@ -1,5 +1,5 @@
 # django
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
@@ -11,18 +11,26 @@ User = get_user_model()
 
 
 class AuthenticationService:
+    """
+    Service which handles all logic related to authentication:
+    login, logout, refreshing jwt token, setting and deleting
+    jwt tokens from cookies
+    """
 
     @staticmethod
     def login(request):
+        # Read credentials from request (payload)
         data = request.data
         email = data["email"]
         password = data["password"]
 
+        # Validate user
         user = authenticate(request, username=email, password=password)
 
         if not user or not user.is_active:
             return None, "Invalid credentials"
 
+        # Generate token
         refresh = RefreshToken.for_user(user)
 
         return {
@@ -32,8 +40,10 @@ class AuthenticationService:
 
     @staticmethod
     def logout(request):
+        # Read refresh token from cookie
         refresh_token = request.COOKIES.get("refresh_token")
 
+        # Add token to black list
         if refresh_token:
             try:
                 token = RefreshToken(refresh_token)
@@ -43,15 +53,19 @@ class AuthenticationService:
 
     @staticmethod
     def refresh_token(request):
+        # Read refresh token from cookie, if not return None with descriptive message
         refresh_token = request.COOKIES.get("refresh_token")
 
         if refresh_token is None:
             None, "token not found"
 
+        # Check user from token to ensure user is logged in.
+        # Otherwise there's a big chance to enter in infinite validation flow.
         refresh = RefreshToken(refresh_token)
         if not refresh.payload.get("user_id"):
             raise TokenError("Token contains no user_id")
 
+        # Refresh token
         refresh = RefreshToken(refresh_token)
         access = refresh.access_token
         return {
@@ -61,6 +75,7 @@ class AuthenticationService:
 
     @staticmethod
     def set_access_token_cookie(response, access_token):
+        # Set access token into cookies
         response.set_cookie(
             key="access_token",
             value=access_token,
@@ -72,6 +87,7 @@ class AuthenticationService:
 
     @staticmethod
     def set_refresh_token_cookie(response, refresh_token):
+        # Set refresh token into cookies
         response.set_cookie(
             key="refresh_token",
             value=refresh_token,
@@ -82,35 +98,45 @@ class AuthenticationService:
         )
 
     @staticmethod
-    def delete_jwt_token_cookies(response):
+    def clear_auth_cookies(response):
+        # Remove jwt tokens from cookies
         response.delete_cookie("access_token", "/api/auth/")
         response.delete_cookie("refresh_token", "/api/auth/")
 
 
 class UserService:
+    '''
+    Service to handle logic of user's actions 
+    '''
 
     @staticmethod
     def withdraw(user_id, amount):
+        # Validate input amount
         if amount < 1:
             return False, "Invalid amount value"
 
+        # Validate user
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return False, "User does not exist"
 
+        # Check if user has enough money on balance
         if amount > user.balance:
             return False, "Not enough money on user's balance"
 
+        # Perform withdraw
         user.balance -= amount
         user.save()
         return True, f"Withdraw completed successfully. {amount=}"
 
     @staticmethod
     def deposit(user_id, amount):
+        # Validate input amount
         if amount < 1:
             return False, "Invalid amount value"
 
+        # Validate user
         try:
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -119,6 +145,7 @@ class UserService:
             print(e)
             return False, "Something went wrong"
 
+        # Perform deposit
         user.balance += amount
         user.save()
         return True, f"Deposit completed successfully. {amount=}"
