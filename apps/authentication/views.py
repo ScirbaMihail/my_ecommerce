@@ -42,18 +42,17 @@ class AuthenticationViewSet(ViewSet):
             return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
 
         response = Response({"status": msg}, status=status.HTTP_200_OK)
+        AuthenticationService.set_refresh_token_cookie(response, data["refresh"])
+        AuthenticationService.set_access_token_cookie(response, data["access"])
 
-        self._set_cookies(response, data["access"], data["refresh"])
         return response
 
     @action(detail=False, methods=["post"])
     def logout(self, request):
         AuthenticationService.logout(request)
         response = Response({"status": "logout successful"})
-        response.delete_cookie("access_token", "/api/auth/")
-        response.delete_cookie("refresh_token", "/api/auth/")
+        AuthenticationService.delete_jwt_token_cookies(response)
         return response
-        
 
     @action(
         detail=False,
@@ -69,10 +68,9 @@ class AuthenticationViewSet(ViewSet):
             if not data:
                 return Response({"status": msg}, status=status.HTTP_401_UNAUTHORIZED)
 
-            access, refresh = data["access"], data["refresh"]
-
             response = Response({"status": msg}, status=status.HTTP_200_OK)
-            self._set_cookies(response, access, refresh)
+            AuthenticationService.set_refresh_token_cookie(response, data["refresh"])
+            AuthenticationService.set_access_token_cookie(response, data["access"])
 
             return response
         except TokenError as e:
@@ -80,25 +78,6 @@ class AuthenticationViewSet(ViewSet):
                 {"status": "Invalid or expired token"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-
-    def _set_cookies(self, response: Response, access_token, refresh_token):
-        jwt_settings = settings.SIMPLE_JWT
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            expires=jwt_settings["ACCESS_TOKEN_LIFETIME"],
-            httponly=True,
-            secure=False,
-            path="/api/auth/",
-        )
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            expires=jwt_settings["REFRESH_TOKEN_LIFETIME"],
-            httponly=True,
-            secure=False,
-            path="/api/auth/",
-        )
 
 
 class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):

@@ -1,6 +1,7 @@
 # django
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 # drf
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -39,7 +40,6 @@ class AuthenticationService:
                 token.blacklist()
             except TokenError:
                 pass
-        
 
     @staticmethod
     def refresh_token(request):
@@ -49,11 +49,42 @@ class AuthenticationService:
             None, "token not found"
 
         refresh = RefreshToken(refresh_token)
+        if not refresh.payload.get("user_id"):
+            raise TokenError("Token contains no user_id")
+
+        refresh = RefreshToken(refresh_token)
         access = refresh.access_token
         return {
             "refresh": str(refresh),
             "access": str(access),
         }, "token refreshed successfully"
+
+    @staticmethod
+    def set_access_token_cookie(response, access_token):
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
+            httponly=True,
+            secure=False,
+            path="/api/auth/",
+        )
+
+    @staticmethod
+    def set_refresh_token_cookie(response, refresh_token):
+        response.set_cookie(
+            key="refresh_token",
+            value=refresh_token,
+            expires=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
+            httponly=True,
+            secure=False,
+            path="/api/auth/",
+        )
+
+    @staticmethod
+    def delete_jwt_token_cookies(response):
+        response.delete_cookie("access_token", "/api/auth/")
+        response.delete_cookie("refresh_token", "/api/auth/")
 
 
 class UserService:
