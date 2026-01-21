@@ -30,7 +30,12 @@ class AuthenticationViewSet(ViewSet):
     def authentication_status(self, request):
         return Response({"status": "authenticated"}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["post"], permission_classes=[AllowAny])
+    @action(
+        detail=False,
+        methods=["post"],
+        permission_classes=[AllowAny],
+        authentication_classes=[],
+    )
     def login(self, request):
         data, msg = AuthenticationService.login(request)
         if not data:
@@ -41,12 +46,22 @@ class AuthenticationViewSet(ViewSet):
         self._set_cookies(response, data["access"], data["refresh"])
         return response
 
+    @action(detail=False, methods=["post"])
+    def logout(self, request):
+        AuthenticationService.logout(request)
+        response = Response({"status": "logout successful"})
+        response.delete_cookie("access_token", "/api/auth/")
+        response.delete_cookie("refresh_token", "/api/auth/")
+        return response
+        
+
     @action(
         detail=False,
         methods=["post"],
         permission_classes=[AllowAny],
+        authentication_classes=[],
         url_path="token/refresh",
-        serializer_class=None
+        serializer_class=None,
     )
     def refresh_token(self, request):
         try:

@@ -26,7 +26,7 @@ async function fetchWithAuth(endpoint, options = {}, raise_error = false) {
     if (response.status === 401) {
         const refreshed = await refreshToken()
         if (refreshed) {
-            return fetchWithAuth(url, options)
+            return fetchWithAuth(endpoint, options)
         }
         if (raise_error) {
             throw new Error(`API ERROR: refresh token failed`)
@@ -41,12 +41,50 @@ async function fetchWithAuth(endpoint, options = {}, raise_error = false) {
     return response.json()
 }
 
+async function fetchWithNoAuth(endpoint, options = {}) {
+    const url = `${API_URL}/${endpoint}`
+    const response = await fetch(url, {
+        headers: {
+            "Content-type": "application/json",
+            ...options.headers
+        },
+        ...options
+    })
+
+    if (response.status === 401) {
+        throw new Error(`API ERROR: ${response.status}`)
+    }
+
+    if (!response.ok) {
+        throw new Error(`API ERROR: ${response.status}`)
+    }
+
+    return response.json()
+}
+
 
 export async function is_logged() {
     try {
         await fetchWithAuth('auth/authentication_status/', {}, true)
-        return "My profile"
+        return true
     } catch {
-        return "Log in"
+        return false
     }
+}
+
+export async function login(email, password) {
+    const credentials = {
+        "email": email,
+        "password": password
+    }
+    try {
+        fetchWithNoAuth('auth/login/', { method: "POST", body: JSON.stringify(credentials) })
+        redirect('/')
+    } catch {
+        redirect('/login')
+    }
+}
+
+export async function logout() {
+    await fetchWithAuth("auth/logout/", { method: "POST" })
 }

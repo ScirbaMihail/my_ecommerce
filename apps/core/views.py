@@ -12,3 +12,7 @@ class PagesViewSet(ViewSet):
 
     def list(self, request):
         return render(request, "pages/home.html")
+
+    @action(detail=False, methods=['get', 'post'])
+    def login(self, request):
+        return render(request, "pages/login.html")

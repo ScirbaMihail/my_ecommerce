@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 # drf
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 User = get_user_model()
 
@@ -27,6 +28,18 @@ class AuthenticationService:
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }, "logged in successfully"
+
+    @staticmethod
+    def logout(request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except TokenError:
+                pass
+        
 
     @staticmethod
     def refresh_token(request):

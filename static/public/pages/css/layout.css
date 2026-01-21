@@ -6,14 +6,16 @@
 
 body {
     padding-top: 100px;
+    z-index: 1;
 }
 
 #header-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100vw;
     height: 100px;
     background-color: white;
+    z-index: 20;
 
     &,
     & nav {

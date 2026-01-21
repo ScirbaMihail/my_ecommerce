@@ -17,7 +17,7 @@
       <nav>
         <ul>
           <li>
-            <a href="">Home</a>
+            <a href="{% url 'public:pages-list' %}">Home</a>
           </li>
           <li>
             <a href="">Store</a>
@@ -27,7 +27,10 @@
           </li>
           <li id="header-container__profile">
             <p>Loading ...</p>
-            <a href="" style="display: none;"></a>
+            <a href="{% url 'public:pages-login' %}" id="header-container__login-link" style="display: none;"></a>
+          </li>
+          <li>
+            <a href="{% url 'public:pages-list' %}" style="display: none;" id="logout-btn">Logout</a>
           </li>
         </ul>
       </nav>

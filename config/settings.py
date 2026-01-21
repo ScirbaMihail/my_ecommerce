@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # DRF
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
     # Local
     "apps.core",
@@ -71,12 +72,14 @@ AUTH_USER_MODEL = "authentication.user"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework_simplejwt.authentication.JWTAuthentication"
+        "apps.authentication.authentication.CookieJWTAuthentication",
+        # "rest_framework_simplejwt.authentication.JWTAuthentication"
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 
 from datetime import timedelta
+
 SIMPLE_JWT = {
     # Life time
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -94,7 +97,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "ECommerce internal API",
     "DESCRIPTION": "Internal API for proceeding ECommerce actions",
     "VERSION": "1.0",
-    "PREPROCESSING_HOOKS": ["apps.core.hooks.preprocessing_filter_spec"]
+    "PREPROCESSING_HOOKS": ["apps.core.hooks.preprocessing_filter_spec"],
 }
 
 # Config
