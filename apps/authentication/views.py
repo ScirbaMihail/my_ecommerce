@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.request import Request
 
 # local
 from apps.authentication.services import UserService, AuthenticationService
@@ -25,7 +26,7 @@ class AuthenticationViewSet(ViewSet):
     serializer_class = CustomTokenObtainSerializer
 
     @action(detail=False, methods=["get"])
-    def authentication_status(self, request):
+    def authentication_status(self, request: Request):
         """
         Check if user is authenticated to handle page state.
         Thanks to default authentication class, if user is not authenticated,
@@ -39,7 +40,7 @@ class AuthenticationViewSet(ViewSet):
         permission_classes=[AllowAny],
         authentication_classes=[],
     )
-    def login(self, request):
+    def login(self, request: Request):
         # Call login service. If tokens are missing, return HTTP_401
         data, msg = AuthenticationService.login(request)
         if not data:
@@ -52,7 +53,7 @@ class AuthenticationViewSet(ViewSet):
         return response
 
     @action(detail=False, methods=["post"])
-    def logout(self, request):
+    def logout(self, request: Request):
         AuthenticationService.logout(request)
         response = Response({"status": "logout successful"})
         AuthenticationService.clear_auth_cookies(response)
@@ -66,7 +67,7 @@ class AuthenticationViewSet(ViewSet):
         url_path="token/refresh",
         serializer_class=None,
     )
-    def refresh_token(self, request):
+    def refresh_token(self, request: Request):
         try:
             # Try to update token, if token missing, return HTTP_401
             # If refresh action failed, return HTTP_401 and clear cookies
@@ -97,7 +98,7 @@ class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):
             return PerformTransactionSerializer
         return UserSerializer
 
-    def _get_validated_amount(self, request):
+    def _get_validated_amount(self, request: Request):
         """
         Helper method which reads amount.
         Created to avoid redundant code in "withdraw" and "deposit" endpoints
@@ -110,7 +111,7 @@ class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):
         return serializer.validated_data["amount"]
 
     @action(detail=True, methods=["post"])
-    def deposit(self, request, pk=None):
+    def deposit(self, request: Request, pk=None):
         amount = self._get_validated_amount(request)
         success, msg = UserService.deposit(pk, amount)
 
@@ -119,7 +120,7 @@ class UserViewSet(mixins.RetrieveModelMixin, GenericViewSet):
         return Response({"msg": msg}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["post"])
-    def withdraw(self, request, pk=None):
+    def withdraw(self, request: Request, pk=None):
         amount = self._get_validated_amount(request)
         success, msg = UserService.withdraw(pk, amount)
 

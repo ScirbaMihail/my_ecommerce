@@ -6,6 +6,8 @@ from django.conf import settings
 # drf
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework.response import Response
+from rest_framework.request import Request
 
 User = get_user_model()
 
@@ -18,7 +20,7 @@ class AuthenticationService:
     """
 
     @staticmethod
-    def login(request):
+    def login(request: Request):
         # Read credentials from request (payload)
         data = request.data
         email = data["email"]
@@ -26,20 +28,18 @@ class AuthenticationService:
 
         # Validate user
         user = authenticate(request, username=email, password=password)
-
         if not user or not user.is_active:
             return None, "Invalid credentials"
 
         # Generate token
         refresh = RefreshToken.for_user(user)
-
         return {
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }, "logged in successfully"
 
     @staticmethod
-    def logout(request):
+    def logout(request: Request):
         # Read refresh token from cookie
         refresh_token = request.COOKIES.get("refresh_token")
 
@@ -52,12 +52,12 @@ class AuthenticationService:
                 pass
 
     @staticmethod
-    def refresh_token(request):
+    def refresh_token(request: Request):
         # Read refresh token from cookie, if not return None with descriptive message
         refresh_token = request.COOKIES.get("refresh_token")
 
         if refresh_token is None:
-            None, "token not found"
+            return None, "token not found"
 
         # Check user from token to ensure user is logged in.
         # Otherwise there's a big chance to enter in infinite validation flow.
@@ -74,7 +74,7 @@ class AuthenticationService:
         }, "token refreshed successfully"
 
     @staticmethod
-    def set_access_token_cookie(response, access_token):
+    def set_access_token_cookie(response: Response, access_token: str):
         # Set access token into cookies
         response.set_cookie(
             key="access_token",
@@ -86,7 +86,7 @@ class AuthenticationService:
         )
 
     @staticmethod
-    def set_refresh_token_cookie(response, refresh_token):
+    def set_refresh_token_cookie(response: Response, refresh_token: str):
         # Set refresh token into cookies
         response.set_cookie(
             key="refresh_token",
@@ -98,19 +98,19 @@ class AuthenticationService:
         )
 
     @staticmethod
-    def clear_auth_cookies(response):
+    def clear_auth_cookies(response: Response):
         # Remove jwt tokens from cookies
         response.delete_cookie("access_token", "/api/auth/")
         response.delete_cookie("refresh_token", "/api/auth/")
 
 
 class UserService:
-    '''
-    Service to handle logic of user's actions 
-    '''
+    """
+    Service to handle logic of user's actions
+    """
 
     @staticmethod
-    def withdraw(user_id, amount):
+    def withdraw(user_id: int, amount: float):
         # Validate input amount
         if amount < 1:
             return False, "Invalid amount value"
@@ -131,7 +131,7 @@ class UserService:
         return True, f"Withdraw completed successfully. {amount=}"
 
     @staticmethod
-    def deposit(user_id, amount):
+    def deposit(user_id: int, amount: float):
         # Validate input amount
         if amount < 1:
             return False, "Invalid amount value"

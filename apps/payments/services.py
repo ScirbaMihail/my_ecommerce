@@ -38,7 +38,7 @@ class OrderService:
         }
 
     @staticmethod
-    def process_payment(order_id):
+    def process_payment(order_id: int):
         # Validations
         try:
             order = Order.objects.select_related("user", "user__cart").get(pk=order_id)
@@ -78,7 +78,7 @@ class OrderService:
         return True, {"status": "success", "message": "Order is paid"}
 
     @staticmethod
-    def mark_paid(order_id):
+    def mark_paid(order_id: int):
         try:
             order = Order.objects.get(pk=order_id)
             order.status = Order.Statuses.PAID

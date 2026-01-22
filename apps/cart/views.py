@@ -3,6 +3,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework import status
 
 # local
@@ -17,7 +18,7 @@ class CartViewSet(ModelViewSet):
     serializer_class = CartSerializer
 
     @action(detail=True, methods=["get"])
-    def items(self, request, pk=None):
+    def items(self, request: Request, pk=None):
         succeeded, response = CartService.get_items(pk)
         return Response(
             response,
@@ -30,7 +31,7 @@ class CartViewSet(ModelViewSet):
         url_path="items",
         serializer_class=CartItemInputSerializer,
     )
-    def add_item(self, request, pk=None):
+    def add_item(self, request: Request, pk=None):
         serializer = CartItemInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -45,7 +46,7 @@ class CartViewSet(ModelViewSet):
         methods=["delete"],
         url_path="items/(?P<item_id>[^/.]+)",
     )
-    def remove_item(self, request, pk=None, item_id=None):
+    def remove_item(self, request: Request, pk=None, item_id=None):
         succeeded, response = CartService.remove_product(pk, item_id)
         return Response(
             response,

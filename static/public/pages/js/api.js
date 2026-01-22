@@ -14,6 +14,8 @@ async function refreshToken() {
 
 async function fetchWithAuth(endpoint, options = {}, raise_error = false) {
     const url = `${API_URL}/${endpoint}`
+
+    // Perform fetch to endpoint
     const response = await fetch(url, {
         headers: {
             "Content-type": "application/json",
@@ -23,11 +25,17 @@ async function fetchWithAuth(endpoint, options = {}, raise_error = false) {
         ...options
     })
 
+    // If unauthorized, try to refresh token
     if (response.status === 401) {
         const refreshed = await refreshToken()
+        // If refreshing succeeded, try to fetch again
         if (refreshed) {
             return fetchWithAuth(endpoint, options)
         }
+        // If refreshing failed, either raise error or redirect to login page
+        // Rising error is meant to handle no action. 
+        // Example: header buttons, if not logged there just have to be `Log in` button,
+        //          no need to redirect to login.
         if (raise_error) {
             throw new Error(`API ERROR: refresh token failed`)
         }
@@ -50,10 +58,6 @@ async function fetchWithNoAuth(endpoint, options = {}) {
         },
         ...options
     })
-
-    if (response.status === 401) {
-        throw new Error(`API ERROR: ${response.status}`)
-    }
 
     if (!response.ok) {
         throw new Error(`API ERROR: ${response.status}`)
