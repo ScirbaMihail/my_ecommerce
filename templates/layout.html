@@ -25,12 +25,13 @@
           <li>
             <a href="">About</a>
           </li>
-          <li id="header-container__profile">
+          <li id="header-container__profile-container">
             <p>Loading ...</p>
-            <a href="{% url 'public:pages-login' %}" id="header-container__login-link" style="display: none;"></a>
+            <a href="{% url 'public:pages-login' %}" id="header-container__login-link" style="display: none;">Log in</a>
+            <a href="" id="header-container__profile-link" style="display: none;">My Profile</a>
           </li>
-          <li>
-            <a href="{% url 'public:pages-list' %}" style="display: none;" id="logout-btn">Logout</a>
+          <li id="header-container__logout-container" style="display: none;">
+            <a href="{% url 'public:pages-list' %}" id="logout-btn">Logout</a>
           </li>
         </ul>
       </nav>
