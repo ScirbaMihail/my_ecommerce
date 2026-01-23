@@ -17,21 +17,26 @@ class CartViewSet(ModelViewSet):
     queryset = Cart.objects.prefetch_related("products").all()
     serializer_class = CartSerializer
 
-    @action(detail=True, methods=["get"])
+    def get_serializer_class(self):
+        if self.action == 'items' and self.request.method == "POST":
+            return CartItemInputSerializer
+        return super().get_serializer_class()
+
+
+    @action(detail=True, methods=["get", "post"])
     def items(self, request: Request, pk=None):
+        if request.method == "GET":
+            return self._get_items(pk)
+        return self._add_item(request, pk)
+
+    def _get_items(self, pk=None):
         succeeded, response = CartService.get_items(pk)
         return Response(
             response,
             status=status.HTTP_200_OK if succeeded else status.HTTP_404_NOT_FOUND,
         )
 
-    @action(
-        detail=True,
-        methods=["post"],
-        url_path="items",
-        serializer_class=CartItemInputSerializer,
-    )
-    def add_item(self, request: Request, pk=None):
+    def _add_item(self, request: Request, pk=None):
         serializer = CartItemInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

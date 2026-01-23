@@ -13,7 +13,7 @@ class CartService:
     def get_items(cart_id):
         try:
             cart = Cart.objects.prefetch_related("products").get(id=cart_id)
-            data = CartSerializer(cart)
+            data = CartSerializer(cart).data
             return True, {"products": data["products"], "cost": data["cost"]}
         except Cart.DoesNotExist:
             return False, {["cart not found"]}
