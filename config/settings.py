@@ -98,6 +98,9 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Internal API for proceeding ECommerce actions",
     "VERSION": "1.0",
     "PREPROCESSING_HOOKS": ["apps.core.hooks.preprocessing_filter_spec"],
+    'SWAGGER_UI_SETTINGS': {
+        'withCredentials': True,
+    },
 }
 
 # Config

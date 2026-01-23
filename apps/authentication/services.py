@@ -82,7 +82,7 @@ class AuthenticationService:
             expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
             httponly=True,
             secure=False,
-            path="/api/auth/",
+            path="/api/",
         )
 
     @staticmethod
@@ -94,14 +94,14 @@ class AuthenticationService:
             expires=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
             httponly=True,
             secure=False,
-            path="/api/auth/",
+            path="/api/",
         )
 
     @staticmethod
     def clear_auth_cookies(response: Response):
         # Remove jwt tokens from cookies
-        response.delete_cookie("access_token", "/api/auth/")
-        response.delete_cookie("refresh_token", "/api/auth/")
+        response.delete_cookie("access_token", "/api/")
+        response.delete_cookie("refresh_token", "/api/")
 
 
 class UserService:
