@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,19 +47,19 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
-    # cors
-    "corsheaders"
     # Local
     "apps.core",
     "apps.authentication",
     "apps.products",
     "apps.cart",
     "apps.payments",
+    # cors
+    "corsheaders",
 ]
 
 # Middleware
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware"
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -68,7 +70,7 @@ MIDDLEWARE = [
 ]
 
 # Authentication and REST
-CORS_ALLOW_ALL_ORIGINS = True
+
 
 AUTHENTICATION_BACKENDS = {"apps.authentication.backends.EmailAuthenticationBackend"}
 
@@ -128,13 +130,34 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
+if DEBUG:
+    CORS_ALLOW_ORIGINS = ['127.0.0.1:5500']
+else:
+    CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
 # Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DEFAULT_POSTGRES = True
+
+if not DEFAULT_POSTGRES:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv('DB_NAME'),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASSWORD"),
+            "HOST": os.getenv("DB_HOST"),
+            "PORT": os.getenv("DB_PORT")
+        }
+    }
+    pass
 
 
 # Password validation
