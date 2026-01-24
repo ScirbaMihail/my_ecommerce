@@ -130,11 +130,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-if DEBUG:
-    CORS_ALLOW_ORIGINS = ['127.0.0.1:5500']
-else:
-    CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:5500', 'http://127.0.0.1:8000']
+
 
 # Database
 DEFAULT_POSTGRES = True
