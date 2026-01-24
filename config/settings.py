@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
+    # cors
+    "corsheaders"
     # Local
     "apps.core",
     "apps.authentication",
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
 
 # Middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware"
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -65,6 +68,8 @@ MIDDLEWARE = [
 ]
 
 # Authentication and REST
+CORS_ALLOW_ALL_ORIGINS = True
+
 AUTHENTICATION_BACKENDS = {"apps.authentication.backends.EmailAuthenticationBackend"}
 
 AUTH_USER_MODEL = "authentication.user"
@@ -241,12 +246,12 @@ UNFOLD = {
                 },
                 {
                     "title": "In stock",
-                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=True",
+                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?in_stock__exact=True",
                     "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "Missing",
-                    "link": lambda request: f"{reverse_lazy("admin:products_product_changelist")}?in_stock__exact=False",
+                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?in_stock__exact=False",
                     "permission": lambda request: request.user.is_superuser,
                 },
             ],
