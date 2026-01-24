@@ -52,7 +52,7 @@ class AuthenticationViewSet(ViewSet):
         AuthenticationService.set_access_token_cookie(response, data["access"])
         return response
 
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=["post"], serializer_class=None)
     def logout(self, request: Request):
         AuthenticationService.logout(request)
         response = Response({"status": "logout successful"})
