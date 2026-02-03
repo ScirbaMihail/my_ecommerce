@@ -155,7 +155,6 @@ else:
             "PORT": os.getenv("DB_PORT")
         }
     }
-    pass
 
 
 # Password validation
@@ -264,15 +263,16 @@ UNFOLD = {
                     "title": "All",
                     "link": reverse_lazy("admin:products_product_changelist"),
                     "permission": lambda request: request.user.is_superuser,
+                    "active": lambda request: not request.GET.get('stock_filter'),
                 },
                 {
                     "title": "In stock",
-                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?in_stock__exact=True",
+                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?stock_filter=in_stock",
                     "permission": lambda request: request.user.is_superuser,
                 },
                 {
                     "title": "Missing",
-                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?in_stock__exact=False",
+                    "link": lambda request: f"{reverse_lazy('admin:products_product_changelist')}?stock_filter=missing",
                     "permission": lambda request: request.user.is_superuser,
                 },
             ],
