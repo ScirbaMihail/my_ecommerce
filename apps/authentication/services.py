@@ -82,6 +82,7 @@ class AuthenticationService:
             expires=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
             httponly=True,
             secure=False,
+            samesite="Lax",
             path="/api/",
         )
 
@@ -94,6 +95,7 @@ class AuthenticationService:
             expires=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
             httponly=True,
             secure=False,
+            samesite="Lax",
             path="/api/",
         )
 

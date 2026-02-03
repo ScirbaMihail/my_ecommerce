@@ -29,10 +29,10 @@ urlpatterns = [
     # Pages
     path("", include("apps.core.urls", namespace="public")),
     # API
-    path("api/", include("apps.authentication.urls", namespace="api")),
-    path("api/", include("apps.products.urls", namespace="api")),
-    path("api/", include("apps.cart.urls", namespace="api")),
-    path("api/", include("apps.payments.urls", namespace="api")),
+    path("api/", include("apps.authentication.urls")),
+    path("api/", include("apps.products.urls")),
+    path("api/", include("apps.cart.urls")),
+    path("api/", include("apps.payments.urls")),
     # API Docs
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
